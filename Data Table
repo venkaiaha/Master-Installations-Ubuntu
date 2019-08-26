@@ -1,0 +1,55 @@
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
+
+
+selected .ts::
+
+import {MatSort,MatTableDataSource} from '@angular/material'
+
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+@Component({
+  selector: 'app-django',
+  templateUrl: './django.component.html',
+  styleUrls: ['./django.component.scss']
+})
+
+GET Method::
+
+export class DjangoComponent implements OnInit {
+  name:any;
+  password:any;
+  django_data:any;
+  getrecord(){
+    var headers= new HttpHeaders(); 
+    headers.append("Access-Control-Allow-Origin", "*");
+
+    this.http.get("http://localhost:8000/api/all/", {"headers": headers}).subscribe(
+      data=>{
+        console.log(data);
+
+        this.django_data = data;
+      },
+      error=>{
+        console.log(error);
+      }
+    );
+  }
+
+  constructor(public http:HttpClient) { }
+
+  ngOnInit() {
+  }
+
+}
+
+.html::
+<h3><button type="submit" class="submitbtn" (click)="getrecord()" >Show Django Data</button></h3><br>
+
+<div *ngIf="django_data">
+    <div *ngFor="let i of django_data; let j=index;">
+        <p>index is : {{j}} -- {{i["name"]}} -- {{i["password"]}}</p>
+    </div>
+</div>

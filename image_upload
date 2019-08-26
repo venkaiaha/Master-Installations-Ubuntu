@@ -1,0 +1,50 @@
+Image upload frontend
+-----------------------------------------------------------------------------------
+test.html
+---------------
+<input type="file" (change)="selectFile($event)" accept=".jpeg, .png, .jpg, .gif">
+
+test.ts
+---------------
+after imports
+------------------
+function readBase64(file): Promise<any> {
+  var reader = new FileReader();
+  var future = new Promise((resolve, reject) => {
+    reader.addEventListener("load", function () {
+      resolve(reader.result);
+    }, false);
+
+    reader.addEventListener("error", function (event) {
+      reject(event);
+    }, false);
+    // reader.readAsArrayBuffer(file);
+    // reader.readAsBinaryString(file);
+    reader.readAsDataURL(file);
+    // reader.readAsText(file);
+  });
+  return future;
+}
+
+inside class:
+selectFile(event: any) {
+    this.readURL(event.target);
+  }
+
+Image Upload backend
+-------------------------------------------------------------------------------------
+import base64
+
+## convert existing image to base64
+with open("image.png", 'rb') as fh:
+    data = str(base64.b64encode(fh.read()).decode('ascii'))
+    # print(data)
+fh.close()
+
+## conver Base64 to image
+# image = ''
+with open('image1.png', 'wb') as fh:
+    d = data.split(';')[1].split(',')[1]
+    fh.write(base64.b64decode(data))
+fh.close()
+

@@ -1,0 +1,119 @@
+AWS:CLOUD SERVICE
+------------------
+sudo apt-get install mysl-server mysql-client
+
+
+
+sudo mysql -u  root -p
+	password:232530
+>mysql:GRANT ALL PRIVILEGES on *.* TO 'root'@'%' IDENTIFIED BY '232530' WITH GRANT OPTION;
+>FLUSH PRIVILEGES;
+>commint;
+
+
+un-installing mysql:
+-------------------------
+sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*
+sudo rm -rf /etc/mysql /var/lib/mysql
+sudo apt-get autoremove
+sudo apt-get autoclean
+
+
+S1:
+
+sudo apt-get install openssh-server
+
+sudo apt install unzip
+
+
+chmod 400 LightsailDefaultKey-ap-south-1.pem 
+
+s2:
+
+ssh -i LightsailDefaultKey-ap-south-1.pem bitnami@13.233.35.91 & 51.2
+
+ssh -i mykey.pem ec2-user@13.255.35.91
+
+sudo apt-get install nginx
+
+scp -i "KeyPairUbuntu.pem" FLASK/MiniP.zip ubuntu@13.233.84.102:~/
+
+scp -i "KeyPairUbuntu.pem" dist.zip ubuntu@13.233.84.102:~/
+
+@aws
+sudo apt install unzip
+unzip dist.zip(unzip foldername)
+
+#sudo vim 13.255.12.2
+server {     
+    listen 80;      
+    listen [::]:80;      
+    server_name http://ec2-13-233-84-102.ap-south-1.compute.amazonaws.com;      
+    root /var/www/html/dist/student;   
+    server_tokens off;   
+    index index.html index.htm;     
+ 
+    location / {         
+        # First attempt to server request as file, then         
+        # as directory, then fall back to displaying a 404.          
+        try_files $uri $uri/ /index.html =404;      
+    } 
+}
+
+inbound rules
+----------------------
+HTTP
+TCP
+80
+0.0.0.0/0
+
+HTTP
+TCP
+80
+::/0
+
+All TCP
+TCP
+0 - 65535
+0.0.0.0/0
+
+All TCP
+TCP
+0 - 65535
+::/0
+
+SSH
+TCP
+22
+0.0.0.0/0
+
+HTTPS
+TCP
+443
+0.0.0.0/0
+ 
+HTTPS
+TCP
+443
+::/0
+
+BackEnd Process
+-----------------------------------
+sudo apt install python-pip
+sudo -H pip install uwsgi
+uwsgi --http :8080 --home /home/ubuntu/MiniP/venv --chdir /home/ubuntu/MiniP.py -w MiniP.wsgi
+
+
+next not required 
+-----------------------------------
+
+sudo service ssh status
+
+sudo nano /etc/ssh/sshd_config
+
+sudo service ssh status
+
+
+
+
+

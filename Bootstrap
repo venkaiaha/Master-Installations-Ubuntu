@@ -1,0 +1,8 @@
+s1: npm install bootstrap
+s2: main app-->src/angular.json
+styles:[
+"node_modules/bootstrap/dist/css/bootstrap.min.css",
+]
+s3:main app --> src/style.css
+@import '~bootstrap/dist/css/bootstrap.min.css';
+s4:npm install ngx-bootstrap --save

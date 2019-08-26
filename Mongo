@@ -1,0 +1,126 @@
+1.sudo apt-get install mongodb
+2.mongo
+3. show dbs
+4.use database name
+5.use test
+6.db
+you get test
+*********Mongo Script(dump)***********
+------------------------------------
+mongoimport -d STUDENT -c student --type csv --file student_marks.csv --headerline
+
+mongoimport -d students -c subject --type csv --file subject_faculty.csv --fields subject,faculty
+
+mongorestore -d imdb -c movies movies.bson
+
+7.show collections(it returns no of tables(nothing but collections in mongo))
+//createCollection("venky")-----old way
+
+db.nest.insert({name:"gunna"})
+
+drop DB::
+db.dropDatabase('test')
+
+drop collection::
+db.demo.drop()
+
+or we want create new db by using ::
+8. createDatabase or use [youe new db name]
+
+inserting data ::
+9. db.test.insertOne({name:"venky",sal:23000,"dept":"IT"})
+
+****if there is no data in your db ie not shown in show dbs
+
+to get no of records:
+
+db.test.find().count()
+
+db.test.find().pretty()...## it shows data json format
+
+db.test.find().limit(5).pretty()...## it returns five records 
+
+db.test.find().limit(5).pretty().sort({_id:-1})
+
+for deleting records::**** based on keys[like id ,name...etc]
+db.test.deleteOne({name:"gunna"})
+db.test.deleteMany({name:"gunna"})
+
+ ***Update ....based on keys
+----------------------------.
+db.test.update({name:"gunna"},{$set{name:"alugunuri"}})
+
+SQL::
+-----------
+create table student( sname varchar(30) , subject  varchar(30), marks varchar(5) );
+
+
+
+LOAD DATA LOCAL INFILE '/home/venkat/students_marks.txt' 
+INTO TABLE student 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(sname,subject,marks);
+
+
+
+
+pip install mysqlclient mysqlserver
+
+
+Sql script:
+python3 manage.py shell
+import os
+import csv
+path='/home/venkat/Desktop'
+from appname.models import models
+with open('file.csv') as f:
+	res=csv.res(f)
+	for i in res:
+		_,created=modelName.objects.get_or_create(model_fields=i[0],model_fields=i[1]...and so on)
+
+exit()
+
+mysql -u gunna -p 232530
+
+>>show databases;
+>>use your DB;
+>> show tables;
+>>select * from yourtable;
+
+LOAD DATA INFILE '/home/paul/clientdata.csv' INTO TABLE CSVImport;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

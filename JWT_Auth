@@ -1,0 +1,180 @@
+jwt authentication backend
+---------------------
+pip install pyjwt
+pip install Flask-JWT
+
+pip install flask-jwt-extended
+-----------------------------------------------------------------------------------
+from flask import Flask, request, redirect, url_for, flash, jsonify, make_response
+import os
+import datetime
+from flask_cors import CORS
+from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    jwt_refresh_token_required, create_refresh_token,
+    get_jwt_identity, set_access_cookies,
+    set_refresh_cookies, unset_jwt_cookies, get_raw_jwt
+    )
+from flask_bcrypt import Bcrypt
+from flask_pymongo import PyMongo
+
+app = Flask(__name__)
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/sample'
+app.config['JWT_SECRET_KEY'] = 'super-secret'
+
+mongo = PyMongo(app)
+CORS(app)
+jwt = JWTManager(app)
+flask_bcrypt = Bcrypt(app)
+blacklist = set()
+
+@app.route('/login', methods=['GET'])
+def login():
+    auth = request.authorization
+    if auth.username and auth.password:
+        query = mongo.db.users.find_one({'username': auth.username})
+        if query != None:
+            if flask_bcrypt.check_password_hash(query["password"], \
+                                                auth.password):
+                access_token = create_access_token({"user": \
+                                    auth.username}, fresh=datetime. \
+                                    datetime.utcnow(), expires_delta \
+                                    =datetime.timedelta(minutes=30))
+                refresh_token = create_refresh_token({ \
+                                        "user":auth.username}, \
+                                        expires_delta=datetime.\
+                                        timedelta(minutes=30))
+                info = "Login Successful"
+                # logger.info(auth.username + " " + info)
+                return jsonify({"msg":True,"access_token": \
+                    access_token,"refresh_token":refresh_token, \
+                                            "info": info}), 200
+            else:
+                info = "Invalid password"
+                # logger.warning(auth.username + " " + info)
+                return jsonify({"msg":False,"info":info}), 401
+        else:
+            info = "Invalid username or password"
+            # logger.warning(auth.username + " <== " + info)
+            return jsonify({"msg":False,"info": info}), 401
+    else:
+        # logger.warning(' Could not verify!')
+        return make_response ('Could not verify!', 401, \
+                {'WWW-Authenticate':'Basic realm="Login required"'})
+
+
+@app.route('/api/signup', methods=['POST'])
+def signup_customer():
+    '''
+    Creates a new customer in the database.
+    '''
+    data = request.json
+    password = flask_bcrypt.generate_password_hash(
+                    data['password'])
+    cur = mongo.db.users.insert_one({'username': data['username'], 'password': password})
+    if cur.acknowledged:
+        return jsonify({"msg":
+                        "Welcome '{}' you are successfully registered". \
+                        format(data['username']), "signup":True}), 201
+    else:
+        msg = "Registration unsuccessful"
+        # logger.warning(username + " " + msg)
+        return jsonify({"msg":msg}), 503
+
+
+@app.route('/api/get/users', methods=['GET'])
+@jwt_required
+def get_users():
+    user = get_jwt_identity()
+    print(user)
+    cur = mongo.db.users.find({}, {"_id": 0, "password": 0})
+    l = list(cur)
+    print(l)
+    return jsonify({"users":l})
+
+
+@app.route('/api/v1/login/<input>')
+@jwt_required
+def logout():
+    '''
+    Enables users to logout from session.
+    '''
+    jti = get_raw_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"msg":"successfully logged out"})
+
+@app.route('/api/coffee/v1/refresh/<input>', methods=['POST','GET'])
+@jwt_refresh_token_required
+def refresh(input):
+    '''
+    Refreshes the access token in the users cache / headers using
+    refresh token.
+    '''
+    username = get_jwt_identity().get('user')
+    access_token = create_access_token({"user":username}, fresh= \
+                                    datetime.datetime.utcnow(), \
+                                    expires_delta=datetime.\
+                                    timedelta(minutes=30))
+    resp = jsonify({'msg': True})
+    set_access_cookies(resp, access_token)
+    return jsonify({"access_token":access_token, "msg":True}), 200
+
+if __name__=='__main__':
+    app.run(debug=True)
+
+----------------------------------------
+front end
+-----------------------------------------
+
+login.component.ts
+--------------------------------
+login(event: any) {
+    if (this.form.valid) {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'authorization': 'Basic ' + btoa(this.form.value['username'] + ":" + this.form.value['password'])
+        })
+      }
+      this.http.get(this.url + "login", httpOptions).subscribe(
+        data => {
+          localStorage.setItem("access_token", data['access_token']);
+          localStorage.setItem("refresh_token", data['refresh_token']);
+          this.router.navigate(['/home']);
+        }, error => {
+          console.log(error);
+        })
+    }
+  }
+
+home.component.ts
+------------------------
+users : any;
+  access_token: any;
+  ngOnInit() {
+    this.access_token = localStorage.getItem("access_token");
+    this.getusers()
+  }
+
+  getusers(){
+    var url = environment.server_url + "api/get/users";
+    var headers = new HttpHeaders({
+      "content-type": "application/json",
+      "authorization": "Bearer " + this.access_token
+    })
+    this.http.get(url, {headers: headers}).subscribe(
+      data=>{
+        this.users = data;
+        console.log(data);
+    }, error => {
+      console.log(error);
+    })
+  }
+
+
+
+
+
+

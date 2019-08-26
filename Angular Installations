@@ -1,0 +1,9 @@
+1.Type script installations:
+
+sudo npm install -g typescript
+mkdir dev
+cd dev
+new project--> code main.ts
+craete js-->tsc  main.ts
+execute--> node main.ts
+

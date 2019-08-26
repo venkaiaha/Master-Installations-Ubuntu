@@ -1,0 +1,207 @@
+forms builder::need to create n no of inputs
+ex_form:formGroup
+construcot(ex:Formsbuilder)
+******
+
+npm install -g node-modules
+
+**********************************
+sudo npm install -g typescript
+mkdir dev
+step-1:
+$ npm install --save @angular/material @angular/cdk
+
+step-2:
+$ npm install --save @angular/animations
+
+app.module.ts
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+step-3:
+npm install --save hammerjs
+
+main.ts
+import 'hammerjs';
+
+step-4:
+styles.css
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+step-5:
+ng add @angular/material
+default colors to your app
+npm install bootstrap
+
+select one color
+
+Datepicker::
+npm install --save moment
+npm i @angular/material-moment-adapter --save
+
+step-6:
+
+add at app.module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { MatToolbarModule, MatIconModule, MatCardModule,MatSidenavModule, MatListModule, MatButtonModule } from  '@angular/material';
+import {MatTableModule} from '@angular/material/table';
+import {  MatInputModule } from '@angular/material';
+import {MatSortModule} from '@angular/material/sort';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTreeModule} from '@angular/material/tree';
+
+
+
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
+
+
+// [...]
+
+@NgModule({
+  declarations: [
+      // [...]
+  ],
+  imports: [
+    MatButtonModule,
+    MatListModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatInputModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSliderModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatDividerModule,
+
+    MatStepperModule,
+    MatGridListModule,
+    MatTabsModule,
+    MatTreeModule,
+    HttpClientModule,
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+step:tool bar
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-icon-button>
+      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    </button>
+    <h1>Angular8</h1>
+    <span class="menu-spacer"></span>
+    <div>
+      <a mat-button [routerLink]="'/accounts'"> Accounts </a>
+      <a mat-button [routerLink]="'/create-account'"> Create Account </a>
+      
+
+    </div>
+  </mat-toolbar-row>
+
+</mat-toolbar>
+
+step-7:sidenav bar
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav>
+    <mat-nav-list>
+
+      <a mat-list-item [routerLink]="'/accounts'"> Accounts </a>
+      <a mat-list-item [routerLink]="'/create-account'"> Create Account </a>
+      
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div style="height: 88vh;">
+
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+Register form::
+
+<mat-card>
+
+  <mat-card-title>New Customer</mat-card-title>
+
+  <mat-card-content>
+    <form>
+      <!-- This is where you need to add your login form -->
+      <mat-form-field class="full-width">
+
+        <input matInput placeholder="First Name">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+
+        <input matInput placeholder="Last Name">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-icon matPrefix>email</mat-icon>
+        <input matInput placeholder="Email">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+
+  
+        <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker" placeholder="Date of birth">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+
+      </mat-form-field>
+
+
+      <mat-form-field class="full-width">
+
+        <textarea matInput placeholder="Address"></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-icon matPrefix>phone</mat-icon>
+        <span matPrefix>+91</span>
+        <input matInput placeholder="Mobile">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-icon matPrefix>password</mat-icon>
+        <input matInput placeholder="Password">
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <!-- REGISTER BUTTON -->
+    <button mat-raised-button color="primary" (click)="sendData()">Create</button>
+  </mat-card-actions>
+
+</mat-card>

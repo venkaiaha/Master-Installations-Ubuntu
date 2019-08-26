@@ -1,0 +1,94 @@
+nginx setup
+----------------------
+sudo apt-get update
+
+sudo apt-get install nginx
+
+sudo ufw app list
+
+sudo ufw allow 'Nginx HTTP'
+
+sudo ufw status
+
+sudo ufw allow ssh
+
+sudo ufw enable
+
+sudo ufw status
+
+systemctl status nginx
+----------------------------------
+frontend setup
+----------------------------------
+goto angulr path(project)
+step1:ng build --prod..................                          after successful ,we got one dist folder & in that folder we got our project folder
+
+step2:angulr path/dist
+
+step3:cp projectfolder -r /var/www/html/
+
+sudo nano /etc/nginx/sites-available/default
+
+paste:
+root var/www/html/projectfolder;
+ctrl+s & ctrl+x
+
+sudo systemctl restart nginx
+
+add inbound rules at aws.amazon.com
+
+
+
+
+---------------------------------------
+backend setup
+------------------------------------
+step1:pip install uwsgi
+
+create new file in your vscode ...with wsgi.py
+wsgi.py
+---------
+from MiniP import app
+
+if __name__ == "__main__":
+    app.run()
+
+step2:uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app
+
+after step2 check your localhost & server is running or not
+
+step3:deactivate
+deactivate your virtual env
+
+step4:create ini file in your project
+MiniP.ini
+copy this into MiniP.ini
+# Header to tell uWSGI to apply these settings
+[uwsgi] 
+
+# Module to import and the callable in the module
+module = wsgi:app
+
+# Tell uWSGI to start up in master mode and 
+# spawn five worker processes to serve actual requests
+master = true
+processes = 5
+
+# socket file location
+socket = project.sock
+
+# permissions to socket file
+chmod-socket = 660
+
+# clean up the socket when the process stops
+vacuum = true
+
+# Upstart is the init system of Ubuntu-like distributions.
+# By default uWSGI maps the SIGTERM signal to “a brutal reload procedure”.
+# However, Upstart uses SIGTERM to completely shutdown processes. 
+# die-on-term inverts the meanings of SIGTERM and SIGQUIT to uWSGI.
+# The first will shutdown the whole stack, the second one will brutally reload it.
+die-on-term = true
+
+step5:sudo nano /etc/systemd/system/MiniP.service
+

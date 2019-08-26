@@ -1,0 +1,50 @@
+Login Auth
+-----------------
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
+})
+export class LoginComponent implements OnInit {
+
+  constructor(public http: HttpClient, 
+    public router: Router, 
+  ){ }
+  username: any;
+  password: any;
+
+  ngOnInit() {
+    
+  }
+  login() {
+    console.log(this.username, this.password);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      })
+    }
+    var body = {"username": this.username, "password": this.password};
+    console.log(body);
+    this.http.post("http://127.0.0.0:5000/auth", body, httpOptions).subscribe(
+      data => {
+        console.log(data);
+        if(data['login'] == true){
+          localStorage.setItem("userProfile", data["username"]);	  
+          console.log(localStorage.getItem("userProfile"));
+	  
+          this.router.navigate(['/home']);
+        }
+      }, error => {
+        console.log(error);
+      })
+    }
+  }
+

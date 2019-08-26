@@ -1,0 +1,14 @@
+imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    LayoutModule,
+    RouterModule.forRoot(appRoutes),
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatCardModule,
+	
+  ],
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule } from '@angular/material';
